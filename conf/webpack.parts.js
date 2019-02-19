@@ -55,17 +55,10 @@ exports.loadJavaScript = ({use = []} = {}) => ({
 
 exports.pugLoader = () => ({
 	module: {
-		rules: [
-			{
-				test: /\.pug$/,
-				use: [
-					"file-loader?name=[path][name].html",
-					"extract-loader",
-					"html-loader",
-					"pug-html-loader"
-				]
-			}
-		]
+		rules: [{
+			test: /\.pug/,
+			loaders: ['html-loader', 'pug-html-loader']
+		}]
 	}
 });
 
@@ -74,7 +67,7 @@ exports.loadCSS = () => ({
 		rules: [
 			{
 				test: /\.(sa|sc|c)ss$/,
-				use: ['css-loader', 'sass-loader']
+				use: ['style-loader', 'css-loader', 'sass-loader']
 			}
 		]
 	}
@@ -147,7 +140,7 @@ exports.extractCSS = ({filename, use = []}) => {
 	};
 };
 
-exports.clean = ({files, path = '/'}) => ({
+exports.clean = ({files, path = 'dist'}) => ({
 	plugins: [
 		new CleanWebpackPlugin(
 			files,
@@ -184,7 +177,6 @@ exports.minifyJavaScript = () => ({
 		})],
 		splitChunks: {
 			chunks: 'all',
-
 		}
 	}
 });
@@ -241,9 +233,6 @@ exports.page = ({
 	                slug = 'index',
 	                template = 'index',
 	                bodyClass = '',
-	                headHtmlSnippet = '',
-	                bodyHtmlSnippet = '',
-	                footerHtmlSnippet = '',
 	                options = 'default'
                 } = {}) => {
 	return {
@@ -252,12 +241,10 @@ exports.page = ({
 				chunks,
 				title,
 				filename: `${slug}.html`,
+				// filetype: 'pug',
 				template: `src/pages/${slug}/index.pug`,
 				// favicon: scripts.root(PKG.directories.templates + '/favicon.png'),
 				bodyClass,
-				headHtmlSnippet,
-				bodyHtmlSnippet,
-				footerHtmlSnippet,
 				...templates[options]
 			}),
 			new ScriptExtHtmlWebpackPlugin({
