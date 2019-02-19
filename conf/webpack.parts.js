@@ -1,10 +1,10 @@
 const webpack = require('webpack');
+const path = require('path');
 const cssnano = require('cssnano');
 const scripts = require('./scripts');
 const PKG = require('../package.json');
 const templates = require('./templates');
 const autoprefixer = require('autoprefixer');
-const SassLintPlugin = require('sass-lint-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const UglifyWebpackPlugin = require('uglifyjs-webpack-plugin');
@@ -140,12 +140,12 @@ exports.extractCSS = ({filename, use = []}) => {
 	};
 };
 
-exports.clean = ({files, path = 'dist'}) => ({
+exports.clean = ({files, pathx = 'dist'}) => ({
 	plugins: [
 		new CleanWebpackPlugin(
 			files,
 			{
-				root: scripts.root(path),
+				root: path.resolve(__dirname, pathx),
 				verbose: false,
 				dry: false,
 				watch: false
@@ -207,8 +207,6 @@ exports.devServer = ({
 	} = {}) =>({
 
 	devServer: {
-		// contentBase: scripts.root(PKG.directories.templates),
-		// public: 'localhost:' + port,
 		port,
 		stats,
 		hot,
@@ -241,9 +239,7 @@ exports.page = ({
 				chunks,
 				title,
 				filename: `${slug}.html`,
-				// filetype: 'pug',
 				template: `src/pages/${slug}/index.pug`,
-				// favicon: scripts.root(PKG.directories.templates + '/favicon.png'),
 				bodyClass,
 				...templates[options]
 			}),
